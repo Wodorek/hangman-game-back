@@ -26,25 +26,29 @@ io.use((socket: extSocket, next) => {
 
 io.on('connection', (socket: extSocket) => {
   const rooms = io.sockets.adapter.rooms;
-  console.log(rooms);
-  socket.on('join room', ({ roomId }) => {
-    console.log(rooms.has(roomId));
+
+  // rooms.has(roomId) && (rooms.get(roomId)?.size as number) < 2;
+
+  socket.on('knock to room', ({ roomId }) => {
     if (rooms.has(roomId) && (rooms.get(roomId)?.size as number) < 2) {
-      socket.join(roomId);
-      socket.to(roomId).emit('user joined', {
-        username: socket.username,
-        id: socket.id,
-      });
-    } else {
-      io.to(socket.id).emit('room full', {
-        room: roomId,
-      });
+      socket
+        .to(roomId)
+        .emit('user knocking', { username: socket.username, id: socket.id });
     }
   });
-  socket.on('create room', ({ roomId }) => {
-    console.log(`created room ${roomId}`);
-    socket.join(roomId);
+
+  socket.on('allow entrance', ({ userId }) => {
+    console.log(userId);
+    socket.to(userId).emit('entrance allowed', { roomId: socket.id });
   });
+
+  socket.on('join room', ({ roomId }) => {
+    console.log(roomId, 'P');
+    socket.join(roomId);
+    console.log(rooms);
+  });
+
+  console.log(rooms);
 });
 
 const PORT = process.env.PORT || 3030;
