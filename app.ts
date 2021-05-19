@@ -30,7 +30,7 @@ io.on('connection', (socket: extSocket) => {
   // rooms.has(roomId) && (rooms.get(roomId)?.size as number) < 2;
 
   socket.on('knock to room', ({ roomId }) => {
-    if (rooms.has(roomId) && (rooms.get(roomId)?.size as number) < 2) {
+    if (rooms.has(roomId) && (rooms.get(roomId)?.size as number) < 3) {
       socket
         .to(roomId)
         .emit('user knocking', { username: socket.username, id: socket.id });
@@ -38,14 +38,18 @@ io.on('connection', (socket: extSocket) => {
   });
 
   socket.on('allow entrance', ({ userId }) => {
-    console.log(userId);
     socket.to(userId).emit('entrance allowed', { roomId: socket.id });
   });
 
   socket.on('join room', ({ roomId }) => {
     console.log(roomId, 'P');
     socket.join(roomId);
+  });
+
+  socket.on('pick letter', ({ roomId, letter }) => {
     console.log(rooms);
+    console.log(roomId);
+    socket.to(roomId).emit('picked letter', letter);
   });
 
   console.log(rooms);
