@@ -42,14 +42,25 @@ io.on('connection', (socket: extSocket) => {
   });
 
   socket.on('join room', ({ roomId }) => {
-    console.log(roomId, 'P');
     socket.join(roomId);
   });
 
   socket.on('pick letter', ({ roomId, letter }) => {
     console.log(rooms);
     console.log(roomId);
-    socket.to(roomId).emit('picked letter', letter);
+    io.sockets.to(roomId).emit('letter picked', letter);
+  });
+
+  socket.on('word select', ({ word, roomId }) => {
+    io.sockets.to(roomId).emit('word selected', word);
+  });
+
+  socket.on('game over', ({ roomId, won }) => {
+    io.sockets.to(roomId).emit('game over', won);
+  });
+
+  socket.on('game reset', ({ roomId, swap }) => {
+    io.sockets.to(roomId).emit('game reset', swap);
   });
 
   console.log(rooms);
