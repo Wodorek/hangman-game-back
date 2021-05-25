@@ -38,7 +38,7 @@ io.on('connection', (socket: extSocket) => {
   });
 
   socket.on('allow entrance', ({ userId }) => {
-    socket.to(userId).emit('entrance allowed', { roomId: socket.id });
+    socket.to(userId).emit('allow entrance', { roomId: socket.id });
   });
 
   socket.on('join room', ({ roomId }) => {
@@ -46,13 +46,11 @@ io.on('connection', (socket: extSocket) => {
   });
 
   socket.on('pick letter', ({ roomId, letter }) => {
-    console.log(rooms);
-    console.log(roomId);
-    io.sockets.to(roomId).emit('letter picked', letter);
+    io.sockets.to(roomId).emit('pick letter', letter);
   });
 
   socket.on('word select', ({ word, roomId }) => {
-    io.sockets.to(roomId).emit('word selected', word);
+    io.sockets.to(roomId).emit('word select', word);
   });
 
   socket.on('game over', ({ roomId, won }) => {
