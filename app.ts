@@ -27,10 +27,10 @@ io.use((socket: extSocket, next) => {
 io.on('connection', (socket: extSocket) => {
   const rooms = io.sockets.adapter.rooms;
 
-  // rooms.has(roomId) && (rooms.get(roomId)?.size as number) < 2;
-
   socket.on('knock to room', ({ roomId }) => {
+    console.log(`${socket.id} knocking`);
     if (rooms.has(roomId) && (rooms.get(roomId)?.size as number) < 3) {
+      console.log('stuk');
       socket
         .to(roomId)
         .emit('user knocking', { username: socket.username, id: socket.id });
@@ -38,15 +38,19 @@ io.on('connection', (socket: extSocket) => {
   });
 
   socket.on('allow entrance', ({ userId }) => {
+    console.log('allow');
     socket.to(userId).emit('allow entrance', { roomId: socket.id });
   });
 
   socket.on('join room', ({ roomId }) => {
+    console.log('join');
     socket.join(roomId);
   });
 
-  socket.on('pick letter', ({ roomId, letter }) => {
-    io.sockets.to(roomId).emit('pick letter', letter);
+  socket.on('pick letter', ({ roomId, letter, correct }) => {
+    io.sockets
+      .to(roomId)
+      .emit('pick letter', { letter: letter, correct: correct });
   });
 
   socket.on('word select', ({ word, roomId }) => {
@@ -59,6 +63,10 @@ io.on('connection', (socket: extSocket) => {
 
   socket.on('game reset', ({ roomId, swap }) => {
     io.sockets.to(roomId).emit('game reset', swap);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('socket disconnected', socket.id);
   });
 
   console.log(rooms);
