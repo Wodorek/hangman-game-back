@@ -14,7 +14,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "startdev": "nodemon app.ts"
+    "start": "node app.ts",
+    "startdev": "nodemon app.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
