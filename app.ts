@@ -28,9 +28,7 @@ io.on('connection', (socket: extSocket) => {
   const rooms = io.sockets.adapter.rooms;
 
   socket.on('knock to room', ({ roomId }) => {
-    console.log(`${socket.id} knocking`);
     if (rooms.has(roomId) && (rooms.get(roomId)?.size as number) < 3) {
-      console.log('stuk');
       socket
         .to(roomId)
         .emit('user knocking', { username: socket.username, id: socket.id });
@@ -38,12 +36,10 @@ io.on('connection', (socket: extSocket) => {
   });
 
   socket.on('allow entrance', ({ userId }) => {
-    console.log('allow');
     socket.to(userId).emit('allow entrance', { roomId: socket.id });
   });
 
   socket.on('join room', ({ roomId }) => {
-    console.log('join');
     socket.join(roomId);
   });
 
@@ -65,11 +61,9 @@ io.on('connection', (socket: extSocket) => {
     io.sockets.to(roomId).emit('game reset', swap);
   });
 
-  socket.on('disconnect', () => {
-    console.log('socket disconnected', socket.id);
+  socket.on('disconnecting', () => {
+    io.sockets.to([...socket.rooms]).emit('user disconnected');
   });
-
-  console.log(rooms);
 });
 
 const PORT = process.env.PORT || 3030;
