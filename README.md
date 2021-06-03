@@ -13,6 +13,7 @@ The backend part of [hangman-game](https://github.com/Wodorek/hangman-game)
 A backed part of my two player version of the classic word guessing game hangman.
 
 This is a websockets server, meant for playing in real time.
+It takes care of game logic events, as well as, allowing entrance and joining rooms.
 
 ## Technologies used
 
